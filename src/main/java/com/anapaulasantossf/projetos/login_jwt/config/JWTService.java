@@ -4,6 +4,9 @@ import com.anapaulasantossf.projetos.login_jwt.model.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +22,20 @@ public class JWTService {
 
     public String generateToken(User user){
         try{
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode objectNode = mapper.valueToTree(user);
+            objectNode.remove("password");
+            String payload = mapper.writeValueAsString(objectNode);
+
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("login-jwt-api")
-                    .withSubject(user.getEmail())
+                    .withSubject("Token de autenticação da API")
+                    .withPayload(payload)
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;
-        } catch (JWTCreationException exception) {
+        } catch (JWTCreationException | JsonProcessingException exception) {
             throw new RuntimeException("Error while generating token", exception);
         }
     }
