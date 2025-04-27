@@ -28,11 +28,10 @@ public class LoginService {
         if (user.isPresent()) {
             boolean correto = passwordEncoder.matches(loginRequestDTO.getPassword(), user.get().getPassword());
 
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-            loginResponseDTO.setUserId(user.get().getId());
-            loginResponseDTO.setToken("TesteToken");
-
             if (correto) {
+                LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+                loginResponseDTO.setUserId(user.get().getId());
+                loginResponseDTO.setToken("TesteToken");
                 return loginResponseDTO;
             } else {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário inválido");
@@ -40,6 +39,5 @@ public class LoginService {
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário inválido");
     }
-
 
 }
