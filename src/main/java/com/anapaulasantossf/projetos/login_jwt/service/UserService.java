@@ -7,6 +7,7 @@ import com.anapaulasantossf.projetos.login_jwt.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +20,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id)));
@@ -29,6 +33,10 @@ public class UserService {
     }
 
     public User create(User user) {
+
+        String hashPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
+
         return userRepository.save(user);
     }
 
