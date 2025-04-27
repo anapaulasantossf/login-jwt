@@ -1,5 +1,6 @@
 package com.anapaulasantossf.projetos.login_jwt.service;
 
+import com.anapaulasantossf.projetos.login_jwt.config.JWTService;
 import com.anapaulasantossf.projetos.login_jwt.dto.LoginRequestDTO;
 import com.anapaulasantossf.projetos.login_jwt.dto.LoginResponseDTO;
 import com.anapaulasantossf.projetos.login_jwt.model.User;
@@ -21,6 +22,9 @@ public class LoginService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    JWTService jwtService;
+
     public LoginResponseDTO findByEmail(LoginRequestDTO loginRequestDTO) {
 
         Optional<User> user = userRepository.findByEmail(loginRequestDTO.getEmail());
@@ -29,9 +33,10 @@ public class LoginService {
             boolean correto = passwordEncoder.matches(loginRequestDTO.getPassword(), user.get().getPassword());
 
             if (correto) {
+                String token = jwtService.generateToken(user.get());
                 LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
                 loginResponseDTO.setUserId(user.get().getId());
-                loginResponseDTO.setToken("TesteToken");
+                loginResponseDTO.setToken(token);
                 return loginResponseDTO;
             } else {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário inválido");
