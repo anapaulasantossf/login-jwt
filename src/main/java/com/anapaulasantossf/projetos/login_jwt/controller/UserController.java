@@ -18,14 +18,11 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     UserService userService;
 
     @GetMapping
     public List<User> getAll(){
-        return userRepository.findAll();
+        return userService.findAll();
     }
 
     @GetMapping("/{id}")
