@@ -1,8 +1,5 @@
 package com.anapaulasantossf.projetos.login_jwt.service;
 
-import com.anapaulasantossf.projetos.login_jwt.config.JWTService;
-import com.anapaulasantossf.projetos.login_jwt.dto.LoginRequestDTO;
-import com.anapaulasantossf.projetos.login_jwt.dto.LoginResponseDTO;
 import com.anapaulasantossf.projetos.login_jwt.model.User;
 import com.anapaulasantossf.projetos.login_jwt.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,8 +21,7 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    JWTService jwtService; //remover
+
 
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(userRepository.findById(id)
@@ -33,9 +29,11 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1qd3QtYXBpIiwic3ViIjoiVG9rZW4gZGUgYXV0ZW50aWNhw6fDo28gZGEgQVBJIiwiaWQiOjQsImVtYWlsIjoiYW5hcGF1bGExQHRlc3RlLmNvbS5iciIsImZpcnN0TmFtZSI6IkFuYSIsImxhc3ROYW1lIjoiRmVycmVpcmEiLCJwaG9uZU51bWJlciI6IjMxOTk5OTk5OTk5IiwiZXhwIjoxNzQ1Nzc3MTM3fQ.AgODNdioNkYLJ8AOgHlo81LJsGC15h-f9t_WhEkyVpM";
-        String teste = jwtService.validateToken(token);
-        System.out.println("AQUIIIII: " + teste);
+        //String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1qd3QtYXBpIiwic3ViIjoiVG9rZW4gZGUgYXV0ZW50aWNhw6fDo28gZGEgQVBJIiwiaWQiOjQsImVtYWlsIjoiYW5hcGF1bGExQHRlc3RlLmNvbS5iciIsImZpcnN0TmFtZSI6IkFuYSIsImxhc3ROYW1lIjoiRmVycmVpcmEiLCJwaG9uZU51bWJlciI6IjMxOTk5OTk5OTk5IiwiZXhwIjoxNzQ1Nzk3NDQ1fQ.yp0YjNh9K0f86KlKQ726J5crrmRTH0rLCbxeqvGwHLU";
+        //String teste = jwtService.validateToken(token);
+        //Map<String, Claim> teste2 = jwtService.validateToken2(token);
+        //System.out.println("AQUIIIII: " + teste);
+        //System.out.println("XXXXXX teste2: " + teste2);
         return userRepository.findAll();
     }
 
@@ -71,8 +69,4 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado com ID: " + id);
         }
     }
-
-
-
-
 }

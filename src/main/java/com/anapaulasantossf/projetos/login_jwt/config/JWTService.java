@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Map;
 
 @Service
 public class JWTService {
@@ -51,6 +53,19 @@ public class JWTService {
                     .build()
                     .verify(token)
                     .getPayload();
+        } catch (JWTVerificationException exception){
+            throw new RuntimeException("Token inválido ou expirado", exception);
+        }
+    }
+
+    public Map<String, Claim> validateToken2(String token){
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer(issuer)
+                    .build()
+                    .verify(token)
+                    .getClaims();
         } catch (JWTVerificationException exception){
             throw new RuntimeException("Token inválido ou expirado", exception);
         }
