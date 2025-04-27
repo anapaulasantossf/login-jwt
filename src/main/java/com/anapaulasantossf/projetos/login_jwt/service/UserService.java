@@ -57,25 +57,7 @@ public class UserService {
         }
     }
 
-    public LoginResponseDTO findByEmail(LoginRequestDTO loginRequestDTO) {
 
-        Optional<User> user = userRepository.findByEmail(loginRequestDTO.getEmail());
-
-        if (user.isPresent()) {
-            boolean correto = true;//passwordEncoder.matches(loginDTO.getPassword(), usuario.get().getSenha());
-
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-            loginResponseDTO.setUserId(user.get().getId());
-            loginResponseDTO.setToken("TesteToken");
-
-            if (correto) {
-                return loginResponseDTO;
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário inválido");
-            }
-        }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário inválido");
-    }
 
 
 }

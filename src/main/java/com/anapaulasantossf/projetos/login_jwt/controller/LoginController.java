@@ -20,7 +20,7 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
 
-        //LoginResponseDTO loginResponseDTO = usuarioService.findByEmail(loginDTO);
-        return ResponseEntity.ok(null);
+        LoginResponseDTO loginResponseDTO = loginService.findByEmail(loginRequestDTO.getEmail());
+        return ResponseEntity.ok(loginResponseDTO);
     }
 }
