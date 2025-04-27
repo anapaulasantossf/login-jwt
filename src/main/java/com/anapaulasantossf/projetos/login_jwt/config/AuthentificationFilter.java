@@ -41,23 +41,19 @@ public class AuthentificationFilter extends OncePerRequestFilter {
         if (token != null){
             System.out.println("CONTEM TOKEN");
             Map<String, Claim> payload = jwtService.validateToken2(token);
-            String email = payload.get("email").toString();
-            System.out.println(payload.get("email"));
-            System.out.println(email);
+            String email = payload.get("email").toString().replace("\"","");
             Optional<User> user = userRepository.findByEmail(email);
             if (user.isPresent()) {
-                var authentication = new UsernamePasswordAuthenticationToken(user, null, "ROLE_ADM");
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                response.setStatus(HttpServletResponse.SC_OK);
             }
-
         } else {
             System.out.println("NÃO CONTEM TOKEN");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token inexistente ou inválido");
+            return;
         }
 
-
-
         filterChain.doFilter(request, response);
-        return;
     }
 
     private String recoverToken(HttpServletRequest request){
