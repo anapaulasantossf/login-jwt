@@ -29,11 +29,6 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        //String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb2dpbi1qd3QtYXBpIiwic3ViIjoiVG9rZW4gZGUgYXV0ZW50aWNhw6fDo28gZGEgQVBJIiwiaWQiOjQsImVtYWlsIjoiYW5hcGF1bGExQHRlc3RlLmNvbS5iciIsImZpcnN0TmFtZSI6IkFuYSIsImxhc3ROYW1lIjoiRmVycmVpcmEiLCJwaG9uZU51bWJlciI6IjMxOTk5OTk5OTk5IiwiZXhwIjoxNzQ1Nzk3NDQ1fQ.yp0YjNh9K0f86KlKQ726J5crrmRTH0rLCbxeqvGwHLU";
-        //String teste = jwtService.validateToken(token);
-        //Map<String, Claim> teste2 = jwtService.validateToken2(token);
-        //System.out.println("AQUIIIII: " + teste);
-        //System.out.println("XXXXXX teste2: " + teste2);
         return userRepository.findAll();
     }
 
