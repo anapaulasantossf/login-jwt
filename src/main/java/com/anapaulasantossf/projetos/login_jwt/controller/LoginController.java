@@ -21,7 +21,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
-
         LoginResponseDTO loginResponseDTO = loginService.findByEmail(loginRequestDTO);
         return ResponseEntity.ok(loginResponseDTO);
     }

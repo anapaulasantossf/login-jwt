@@ -26,13 +26,11 @@ public class LoginService {
     JWTService jwtService;
 
     public LoginResponseDTO findByEmail(LoginRequestDTO loginRequestDTO) {
-
         Optional<User> user = userRepository.findByEmail(loginRequestDTO.getEmail());
 
         if (user.isPresent()) {
-            boolean correto = passwordEncoder.matches(loginRequestDTO.getPassword(), user.get().getPassword());
-
-            if (correto) {
+            boolean isValid = passwordEncoder.matches(loginRequestDTO.getPassword(), user.get().getPassword());
+            if (isValid) {
                 String token = jwtService.generateToken(user.get());
                 LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
                 loginResponseDTO.setUserId(user.get().getId());
