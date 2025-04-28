@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,7 +26,8 @@ public class AuthentificationFilter extends OncePerRequestFilter {
     UserRepository userRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         // Se for POST para /auth/login ou /users, só passa para frente sem fazer nada
         String path = request.getRequestURI();
         String method = request.getMethod();
@@ -45,6 +44,7 @@ public class AuthentificationFilter extends OncePerRequestFilter {
             Optional<User> user = userRepository.findByEmail(email);
             if (user.isPresent()) {
                 response.setStatus(HttpServletResponse.SC_OK);
+                filterChain.doFilter(request, response);
             }
         } else {
             System.out.println("NÃO CONTEM TOKEN");
@@ -52,8 +52,6 @@ public class AuthentificationFilter extends OncePerRequestFilter {
             response.getWriter().write("Token inexistente ou inválido");
             return;
         }
-
-        filterChain.doFilter(request, response);
     }
 
     private String recoverToken(HttpServletRequest request){
