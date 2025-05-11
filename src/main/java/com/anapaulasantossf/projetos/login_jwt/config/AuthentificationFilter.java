@@ -36,6 +36,16 @@ public class AuthentificationFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (path.startsWith("/swagger-ui/") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/api-docs") ||
+                path.equals("/swagger-ui.html") ||
+                path.equals("/swagger-resources") ||
+                path.startsWith("/swagger-resources/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         var token = this.recoverToken(request);
         if (token != null){
             System.out.println("CONTEM TOKEN");
