@@ -1,39 +1,34 @@
-package com.anapaulasantossf.projetos.login_jwt.model;
+package com.anapaulasantossf.projetos.login_jwt.dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-@Table (name = "address")
-@Entity (name = "address")
-@NoArgsConstructor
 @Data
-public class Address {
+@NoArgsConstructor
+public class AddressDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "zipCode")
     private String zipCode;
 
-    @NotBlank
+    @NotBlank(message = "Endereço obrigatorio")
     private String  street;
 
-    @NotNull
+    @NotNull(message = "Numero do obrigatorio")
     private Long number;
 
     private String complement;
 
-    @NotBlank
+    @NotBlank(message = "Estado obrigatorio")
     private String state;
 
-    @NotBlank
+    @NotBlank(message = "Cidade obrigatorio")
     private String city;
 
-    @NotNull
+    @NotNull(message = "Usuario obrigatorio")
     private Long userId;
 }

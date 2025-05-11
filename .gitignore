@@ -30,7 +30,7 @@ build/
 !**/src/test/**/build/
 ./db_postgres
 db_postgres/
-/db_postgres/
+/db_postgres
 
 ### VS Code ###
 .vscode/
