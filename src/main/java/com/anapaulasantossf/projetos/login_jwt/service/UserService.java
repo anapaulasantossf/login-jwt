@@ -1,8 +1,10 @@
 package com.anapaulasantossf.projetos.login_jwt.service;
 
+import com.anapaulasantossf.projetos.login_jwt.dto.UserDTO;
 import com.anapaulasantossf.projetos.login_jwt.model.User;
 import com.anapaulasantossf.projetos.login_jwt.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -21,34 +24,43 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ModelMapper modelMapper;
 
-
-    public Optional<User> findById(Long id) {
-        return Optional.ofNullable(userRepository.findById(id)
+    public Optional<UserDTO> findById(Long id) {
+        return Optional.ofNullable(userRepository.findById(id).map(this::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id)));
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDTO> findAll() {
+        return userRepository.findAll().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public User create(User user) {
-
-        String hashPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashPassword);
-
-        return userRepository.save(user);
+    public UserDTO create(UserDTO userDTO) {
+        User user = toEntity(userDTO);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User savedUser = userRepository.save(user);
+        return toDTO(savedUser);
     }
 
-    public User update(Long id, User user) {
+    public UserDTO update(Long id, UserDTO userDTO) {
         try {
-            Optional<User> usuarioOptional = this.findById(id);
+            User existingUser = userRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID " + id));
 
-            if (usuarioOptional.isPresent()) {
-                return userRepository.saveAndFlush(user);
-            } else {
-                throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+            existingUser.setEmail(userDTO.getEmail());
+            existingUser.setFirstName(userDTO.getFirstName());
+            existingUser.setLastName(userDTO.getLastName());
+            existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+
+            if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
+                existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             }
+            User updatedUser = userRepository.save(existingUser);
+            return toDTO(updatedUser);
+
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (Exception e) {
@@ -57,11 +69,21 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        Optional<User> usuarioOptional = this.findById(id);
+        Optional<UserDTO> usuarioOptional = this.findById(id);
         if (usuarioOptional.isPresent()) {
             userRepository.deleteById(id);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado com ID: " + id);
         }
+    }
+
+    public UserDTO toDTO(User user) {
+        UserDTO dto = modelMapper.map(user, UserDTO.class);
+        dto.setPassword(null);
+        return dto;
+    }
+
+    public User toEntity(UserDTO userDTO) {
+        return modelMapper.map(userDTO, User.class);
     }
 }
