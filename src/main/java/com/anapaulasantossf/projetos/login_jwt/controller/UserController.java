@@ -2,6 +2,9 @@ package com.anapaulasantossf.projetos.login_jwt.controller;
 
 import com.anapaulasantossf.projetos.login_jwt.dto.UserDTO;
 import com.anapaulasantossf.projetos.login_jwt.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,11 @@ public class UserController {
     UserService userService;
 
     @GetMapping
+    @Operation(summary = "Listar todos os usuários", description = "Retorna uma lista com todos os usuários cadastrados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuários encontrados com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado"),
+    })
     public List<UserDTO> getAll(){
         return userService.findAll();
     }
