@@ -16,7 +16,6 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "zipCode")
     private String zipCode;
 
@@ -36,5 +35,4 @@ public class Address {
 
     @NotNull
     private Long userId;
-
 }

@@ -1,4 +1,4 @@
-package com.anapaulasantossf.projetos.login_jwt.dto;
+package com.anapaulasantossf.projetos.login_jwt.controller;
 
 import com.anapaulasantossf.projetos.login_jwt.model.Address;
 import com.anapaulasantossf.projetos.login_jwt.service.AddressService;
