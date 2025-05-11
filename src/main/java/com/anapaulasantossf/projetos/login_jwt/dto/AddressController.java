@@ -39,11 +39,10 @@ public class AddressController {
         Address returnAddress = addressService.update(address, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         addressService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }

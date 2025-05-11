@@ -1,11 +1,9 @@
 package com.anapaulasantossf.projetos.login_jwt.controller;
 
-import com.anapaulasantossf.projetos.login_jwt.model.User;
-import com.anapaulasantossf.projetos.login_jwt.repository.UserRepository;
+import com.anapaulasantossf.projetos.login_jwt.dto.UserDTO;
 import com.anapaulasantossf.projetos.login_jwt.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,28 +19,26 @@ public class UserController {
     UserService userService;
 
     @GetMapping
-    public List<User> getAll(){
+    public List<UserDTO> getAll(){
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getFindById(@PathVariable Long id){
-
-        Optional<User> user = userService.findById(id);
+    public ResponseEntity<UserDTO> getFindById(@PathVariable Long id){
+        Optional<UserDTO> user = userService.findById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @PostMapping
-    public ResponseEntity<Long> create(@RequestBody User user) {
-
-        User returnUser = userService.create(user);
+    public ResponseEntity<Long> create(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO returnUser = userService.create(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(returnUser.getId());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
-        User usuario = userService.update(id, user);
-        return ResponseEntity.ok(usuario);
+    public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserDTO userDTO) {
+        UserDTO userDetailDTO = userService.update(id, userDTO);
+        return ResponseEntity.ok(userDetailDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -50,5 +46,4 @@ public class UserController {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
 }
