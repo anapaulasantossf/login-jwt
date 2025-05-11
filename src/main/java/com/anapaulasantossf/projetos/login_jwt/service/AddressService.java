@@ -1,16 +1,17 @@
 package com.anapaulasantossf.projetos.login_jwt.service;
 
+import com.anapaulasantossf.projetos.login_jwt.dto.AddressDTO;
 import com.anapaulasantossf.projetos.login_jwt.model.Address;
 import com.anapaulasantossf.projetos.login_jwt.repository.AddressRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AddressService {
@@ -18,35 +19,32 @@ public class AddressService {
     @Autowired
     AddressRepository addressRepository;
 
-    public List<Address> findByAll() {
-        return addressRepository.findAll();
+    @Autowired
+    ModelMapper modelMapper;
+
+    public List<AddressDTO> findByAll() {
+        return addressRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public Optional<Address> findById(Long id) {
-        Optional<Address> address = addressRepository.findById(id);
-        return address;
+    public Optional<AddressDTO> findById(Long id) {
+        return Optional.ofNullable(addressRepository.findById(id)
+                .map(this::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado " + id)));
     }
 
-    public Address create(Address address) {
-        return addressRepository.save(address);
+    public AddressDTO create(AddressDTO addressDTO) {
+        return toDTO(addressRepository.save(toEntity(addressDTO)));
     }
 
-    public Address update(Address address, Long id) {
-
-        try {
-            Optional<Address> returnAddress = addressRepository.findById(id);
-            if (returnAddress.isPresent()) {
-                return addressRepository.saveAndFlush(address);
-            } else {
-                throw new EntityNotFoundException("Endereço não encontrado com ID: " + id);
-            }
-        } catch (Exception exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro inesperado", exception);
-        }
+    public Address update(AddressDTO addressDTO, Long id) {
+        Address exitsAddress = addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado " + id));
+        exitsAddress = this.toEntity(addressDTO);
+        return addressRepository.saveAndFlush(exitsAddress);
     }
 
     public void delete(Long id) {
-        Optional<Address> returnAddress = this.findById(id);
+        Optional<Address> returnAddress = addressRepository.findById(id);
         if (returnAddress.isPresent()) {
             addressRepository.deleteById(id);
         } else {
@@ -54,4 +52,11 @@ public class AddressService {
         }
     }
 
+    public AddressDTO toDTO(Address address) {
+        return modelMapper.map(address, AddressDTO.class);
+    }
+
+    public Address toEntity(AddressDTO addressDTO) {
+        return modelMapper.map(addressDTO, Address.class);
+    }
 }
