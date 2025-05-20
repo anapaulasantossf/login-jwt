@@ -1,5 +1,6 @@
 package com.anapaulasantossf.projetos.login_jwt.dto;
 
+import com.anapaulasantossf.projetos.login_jwt.model.User;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,9 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AddressDTO {
-
-    private Long id;
+public class AddressesResquestDTO {
 
     @Column(name = "zipCode")
     private String zipCode;
@@ -29,6 +28,5 @@ public class AddressDTO {
     @NotBlank(message = "Cidade obrigatorio")
     private String city;
 
-    @NotNull(message = "Usuario obrigatorio")
-    private Long userId;
+    private User user;
 }

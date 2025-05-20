@@ -34,6 +34,7 @@ public class Address {
     @NotBlank
     private String city;
 
-    @NotNull
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
 }

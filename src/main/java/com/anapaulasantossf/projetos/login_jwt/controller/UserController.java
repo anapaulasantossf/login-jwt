@@ -1,6 +1,7 @@
 package com.anapaulasantossf.projetos.login_jwt.controller;
 
-import com.anapaulasantossf.projetos.login_jwt.dto.UserDTO;
+import com.anapaulasantossf.projetos.login_jwt.dto.UserRequestDTO;
+import com.anapaulasantossf.projetos.login_jwt.dto.UserResponseDTO;
 import com.anapaulasantossf.projetos.login_jwt.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,31 +28,31 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Usuários encontrados com sucesso"),
             @ApiResponse(responseCode = "404", description = "Nenhum usuário encontrado"),
     })
-    public List<UserDTO> getAll(){
+    public List<UserResponseDTO> getAll(){
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getFindById(@PathVariable Long id){
-        Optional<UserDTO> user = userService.findById(id);
+    public ResponseEntity<UserResponseDTO> getFindById(@PathVariable Long id){
+        Optional<UserResponseDTO> user = userService.findById(id);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
     @PostMapping
-    public ResponseEntity<Long> create(@Valid @RequestBody UserDTO userDTO) {
-        UserDTO returnUser = userService.create(userDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(returnUser.getId());
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserRequestDTO userDTO) {
+        UserResponseDTO returnUser = userService.create(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(returnUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserDTO userDTO) {
-        UserDTO userDetailDTO = userService.update(id, userDTO);
+    public ResponseEntity<UserResponseDTO> update(@Valid @PathVariable Long id, @RequestBody UserRequestDTO userDTO) {
+        UserResponseDTO userDetailDTO = userService.update(id, userDTO);
         return ResponseEntity.ok(userDetailDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

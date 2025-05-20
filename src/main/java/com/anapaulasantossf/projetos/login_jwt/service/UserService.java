@@ -1,6 +1,7 @@
 package com.anapaulasantossf.projetos.login_jwt.service;
 
-import com.anapaulasantossf.projetos.login_jwt.dto.UserDTO;
+import com.anapaulasantossf.projetos.login_jwt.dto.UserRequestDTO;
+import com.anapaulasantossf.projetos.login_jwt.dto.UserResponseDTO;
 import com.anapaulasantossf.projetos.login_jwt.model.User;
 import com.anapaulasantossf.projetos.login_jwt.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,25 +28,25 @@ public class UserService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Optional<UserDTO> findById(Long id) {
+    public Optional<UserResponseDTO> findById(Long id) {
         return Optional.ofNullable(userRepository.findById(id).map(this::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + id)));
     }
 
-    public List<UserDTO> findAll() {
+    public List<UserResponseDTO> findAll() {
         return userRepository.findAll().stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public UserDTO create(UserDTO userDTO) {
+    public UserResponseDTO create(UserRequestDTO userDTO) {
         User user = toEntity(userDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         return toDTO(savedUser);
     }
 
-    public UserDTO update(Long id, UserDTO userDTO) {
+    public UserResponseDTO update(Long id, UserRequestDTO userDTO) {
         try {
             User existingUser = userRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID " + id));
@@ -58,8 +59,7 @@ public class UserService {
             if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
                 existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             }
-            User updatedUser = userRepository.save(existingUser);
-            return toDTO(updatedUser);
+            return toDTO(userRepository.save(existingUser));
 
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -69,7 +69,7 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        Optional<UserDTO> usuarioOptional = this.findById(id);
+        Optional<UserResponseDTO> usuarioOptional = this.findById(id);
         if (usuarioOptional.isPresent()) {
             userRepository.deleteById(id);
         } else {
@@ -77,13 +77,13 @@ public class UserService {
         }
     }
 
-    public UserDTO toDTO(User user) {
-        UserDTO dto = modelMapper.map(user, UserDTO.class);
+    public UserResponseDTO toDTO(User user) {
+        UserResponseDTO dto = modelMapper.map(user, UserResponseDTO.class);
         dto.setPassword(null);
         return dto;
     }
 
-    public User toEntity(UserDTO userDTO) {
+    public User toEntity(UserRequestDTO userDTO) {
         return modelMapper.map(userDTO, User.class);
     }
 }
