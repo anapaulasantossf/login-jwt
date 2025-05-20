@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "users")
 @Entity(name = "users")
 @Data
@@ -29,4 +32,7 @@ public class User {
 
     @NotBlank
     private String phoneNumber;
+
+    @OneToMany(mappedBy= "user")
+    private List<Address> addresses = new ArrayList<>();
 }
