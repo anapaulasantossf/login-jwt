@@ -15,6 +15,7 @@ Este repositório contém uma API RESTful desenvolvida em **Spring Boot**, com f
 - 🐘 **PostgreSQL** (banco de dados relacional)
 - 🛫 **Flyway** (controle de versionamento de migrações)
 - 🌐 **RESTful API** seguindo boas práticas (HTTP status, verbos corretos, padronização de URIs)
+- **Teste Unitários e de Integração** seguindo boas práticas.
 
 ---
 
